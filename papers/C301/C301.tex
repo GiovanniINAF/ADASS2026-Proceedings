@@ -61,8 +61,9 @@ imager built on MPI, OpenMP offload and HeFFTe, with large language model
 contracts and tolerances, ran every job on the Leonardo supercomputer and
 judged the results; the agents implemented, reviewed and diagnosed. With one
 writing agent, cross-engine review, no local execution and evidence-labelled
-claims, the loop closed an
-off-axis flux gap with respect to WSClean on a MeerKAT field and produced a
+claims, the loop removed a
+sign-inverting off-axis flux ramp and most of the radial droop with respect to
+WSClean on a MeerKAT field, leaving a residual edge deficit, and produced a
 streaming engine that splits work before it exceeds a known memory budget. On
 VLA data of Abell~2255, CPU and GPU images differ in 34 of 81 million stored
 pixels; agreement with WSClean is reported metric by metric.
@@ -126,13 +127,13 @@ transport changing only floating-point evaluation order.
 
 \section{Results}
 
-\subsection{Closing a Flux Gap on MeerKAT}
+\subsection{Reducing the Flux Gap on MeerKAT}
 
 In earlier validation runs on the MeerKAT field PSZ2~G008.31 (4096$^2$ pixels
 of 1$^{\prime\prime}$, uniform weighting), the peak ratio RICK/WSClean fell
 off-axis, with a cosine ramp along $l-m$ that inverted the sign of 3 of 61
 sources and a smooth radial droop. Five diagnoses, each re-checked against
-WSClean, closed the gap. The uniform-weighting density was binned per w-plane
+WSClean, removed the ramp and most of the droop. The uniform-weighting density was binned per w-plane
 instead of in 2D as in WSClean. The Kaiser--Bessel correction used the
 analytic transform instead of inverting the sampled, truncated kernel. The
 w-phase sign was wrong: code review found nothing, but replacing the w-phase
@@ -144,8 +145,9 @@ giving a factor $\cos(\pi (l-m)/N_{\rm pad})$; a symmetric shift removed it
 and all three sign inversions (Fig.~\ref{fig:meerkat}, left). Finally, 128
 w-planes instead of 20, as in WSClean, reduced the droop coefficient 3.1-fold,
 to a median ratio of 0.992 and a minimum of 0.967 (Fig.~\ref{fig:meerkat},
-right). One fix often hid the next; we did not record which engine proposed
-each.
+right). The minimum ratio of 0.967 is 3.3\% low, outside the 1\% gate; the
+remaining deficit is under investigation. One fix often hid the next; we did
+not record which engine proposed each.
 
 \articlefiguretwo{C301_f1.png}{C301_f2.png}{fig:meerkat}{MeerKAT PSZ2~G008.31,
 same-pixel peak ratio RICK/WSClean for sources above 50$\sigma$ (earlier
@@ -217,7 +219,10 @@ local maxima above $50\sigma$. The other 9 deviate by 1.0--4.7\%, the largest
 being the three sources beyond 2000 pixels from the centre
 (Fig.~\ref{fig:vla}). The whole-image relative $L_2$ of 0.197 reflects coherent
 rings and fringes in the residual map, not a flux error. The cause of the
-edge droop remains open.
+edge droop remains open. Taken together, the 1\% gate is met by the global
+metrics but not by all bright sources on either dataset (MeerKAT minimum ratio
+0.967; 9 of 24 VLA maxima at 1.0--4.7\%), so the science gate is only
+partially passed.
 
 \articlefigure[width=0.5\textwidth]{C301_f3.png}{fig:vla}{VLA Abell~2255,
 Stokes I: RICK/WSClean against radius. Line and band: median and interquartile
@@ -237,7 +242,7 @@ comes from one project and one researcher, without a controlled comparison
 against development without agents. Within these limits, LLM agents can
 refactor a production HPC radio imager when held to scientific gates
 (invariants, tolerances and a reference imager) rather than to code style, but
-validation against WSClean on Leonardo remained essential for every result. The researcher's role shifted from writing kernels to designing the
+validation against WSClean on Leonardo remained essential for every result, and showed that the 1\% gate is not yet met everywhere. The researcher's role shifted from writing kernels to designing the
 loop and judging its evidence.
 
 % [PLACEHOLDER: ACKNOWLEDGEMENTS] e.g. Leonardo/CINECA computing allocation,
